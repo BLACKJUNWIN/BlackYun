@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.black.evaluation.mapper.EvaluationMapper">
+    <select id="selectByPage" resultType="evaluation" parameterType="map">
+        select f.name,u.name userName,e.*
+        from software s,evaluation e,user u,file f
+        <where>
+            <if test="map.name!=null and map.name!=''">
+                and f.name like "%"#{map.name}"%"
+            </if>
+            <if test="map.userName!=null and map.userName!=''">
+                and u.name like "%"#{map.userName}"%"
+            </if>
+            <if test="map.level!=null and map.level!=''">
+                and e.level = #{map.level}
+            </if>
+            and s.file_id=f.id and e.software_id=s.id and e.user_id =u.id
+        </where>
+    </select>
+</mapper>

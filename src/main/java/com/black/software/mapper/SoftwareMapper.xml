@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.black.software.mapper.SoftwareMapper">
+    <select id="selectByPage" resultType="software" parameterType="software">
+        select s.*,f.name,f.size,f.md5,f.category_id
+        from software s,file f
+        <where>
+            <if test="software.name!=null and software.name!=''">
+                f.name like "%"#{software.name}"%"
+            </if>
+            and f.id=s.file_id
+        </where>
+    </select>
+</mapper>
