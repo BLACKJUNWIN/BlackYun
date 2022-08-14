@@ -23,11 +23,7 @@ public class fileUtilsController {
     @Autowired
     FileService fileService;
     @PostMapping("/")
-    public responseJson addFile(@RequestParam MultipartFile file,@RequestParam String category,@RequestParam String md5){
-        File sameFile = fileService.getOne(new QueryWrapper<File>().eq("md5", md5));
-        if(sameFile!=null){
-            return new responseJson(sameFile);
-        }
+    public responseJson addFile(@RequestParam MultipartFile file,@RequestParam String category){
         return fileUtils.uploadFile(file,category);
     }
 

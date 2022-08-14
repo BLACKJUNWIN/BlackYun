@@ -33,6 +33,8 @@ public class Software implements Serializable {
 
     private Long categoryId;
 
+    private String url;
+
     private Long downTick;
 
     private Long shareTick;
