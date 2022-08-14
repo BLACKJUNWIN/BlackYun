@@ -29,12 +29,14 @@ public class Software implements Serializable {
 
     private Long fileId;
 
+    private String name;
+
+    private Long categoryId;
+
     private Long downTick;
 
     private Long shareTick;
 
-    @TableField(exist = false)
-    private String name;
     @TableField(exist = false)
     private Long size;
     @TableField(exist = false)
@@ -51,8 +53,6 @@ public class Software implements Serializable {
     private int page;
     @TableField(exist = false)
     private String type;
-    @TableField(exist = false)
-    private Long categoryId;
 
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;

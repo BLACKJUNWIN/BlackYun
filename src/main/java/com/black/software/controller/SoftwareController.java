@@ -26,22 +26,24 @@ public class SoftwareController {
 
 	@PostMapping("/")
 	public responseJson add(@RequestBody Software software) {
-		File file = new File();
-		File sameFile= fileService.getOne(new QueryWrapper<File>().eq("md5", software.getMd5()));
-		if(sameFile==null){
-			file.setRealName(software.getRealName());
-			file.setName(software.getName());
-			file.setPath(software.getPath());
-			file.setSize(software.getSize());
-			file.setType(software.getType());
-			file.setMd5(software.getMd5());
-			file.setCategoryId(software.getCategoryId());
-			fileService.save(file);
-		}else{
-			return new responseJson(responseCode.FILE_EXIST);
+		if(software.getMd5()!=null&&!software.getMd5().equals("")){
+			File file = new File();
+			File sameFile= fileService.getOne(new QueryWrapper<File>().eq("md5", software.getMd5()));
+			if(sameFile==null){
+				file.setRealName(software.getRealName());
+				file.setName(software.getName());
+				file.setPath(software.getPath());
+				file.setSize(software.getSize());
+				file.setType(software.getType());
+				file.setMd5(software.getMd5());
+				file.setCategoryId(software.getCategoryId());
+				fileService.save(file);
+			}else{
+				return new responseJson(responseCode.FILE_EXIST);
+			}
+			File saveFile = fileService.getOne(new QueryWrapper<File>().eq("md5", software.getMd5()));
+			software.setFileId(saveFile.getId());
 		}
-		File saveFile = fileService.getOne(new QueryWrapper<File>().eq("md5", software.getMd5()));
-		software.setFileId(saveFile.getId());
 		softwareService.save(software);
 	return new responseJson(softwareService.listByPage(new Software()));
 	}
