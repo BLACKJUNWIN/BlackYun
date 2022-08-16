@@ -39,6 +39,14 @@ public class Software implements Serializable {
 
     private Long shareTick;
 
+    private String advantages;
+
+    private String shortcomings;
+
+    private String image;
+
+    @TableField(exist = false)
+    private String themeColor;
     @TableField(exist = false)
     private Long size;
     @TableField(exist = false)

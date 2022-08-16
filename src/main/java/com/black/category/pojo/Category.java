@@ -31,6 +31,8 @@ public class Category implements Serializable {
 
     private String category;
 
+    private String themeColor;
+
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
     @TableField(fill = FieldFill.INSERT_UPDATE)

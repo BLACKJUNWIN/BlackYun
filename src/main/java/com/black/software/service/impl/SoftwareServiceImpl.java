@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,5 +32,10 @@ public class SoftwareServiceImpl extends ServiceImpl<SoftwareMapper, Software> i
         }
         Page<Software> pageParam = new Page<>(page,10);
         return softwareMapper.selectByPage(pageParam,software);
+    }
+
+    @Override
+    public List<Software> selectByCategory(Map<String, Object> map) {
+        return softwareMapper.selectByCategory(map);
     }
 }

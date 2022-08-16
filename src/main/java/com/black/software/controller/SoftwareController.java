@@ -1,6 +1,8 @@
 package com.black.software.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.black.category.pojo.Category;
+import com.black.category.service.CategoryService;
 import com.black.common.pojo.responseCode;
 import com.black.common.pojo.responseJson;
 import com.black.file.pojo.File;
@@ -8,6 +10,7 @@ import com.black.file.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,9 @@ public class SoftwareController {
 
     @Autowired
     FileService fileService;
+
+    @Autowired
+    CategoryService categoryService;
 
     @PostMapping("/")
     public responseJson add(@RequestBody Software software) {
@@ -72,5 +78,26 @@ public class SoftwareController {
     @PatchMapping("/")
     public responseJson select(@RequestBody Software software) {
         return new responseJson(softwareService.listByPage(software));
+    }
+
+    @GetMapping("/")
+    public responseJson softwareList(){
+        List<Category> categoryList = categoryService.list();
+        Map<String, Object> filerMap=new HashMap<>();
+        List<Object> list=new ArrayList<>();
+        filerMap.put("size",10);
+        for (Category item : categoryList) {
+            filerMap.put("categoryId",item.getId());
+            List<Software> softwareList = softwareService.selectByCategory(filerMap);
+            if(softwareList.size()>0){
+                Map<String, Object> map=new HashMap<>();
+                map.put("category",item.getCategory());
+                map.put("themeColor",item.getThemeColor());
+                map.put("categoryId",item.getId());
+                map.put("software",softwareList);
+                list.add(map);
+            }
+        }
+        return new responseJson(list);
     }
 }

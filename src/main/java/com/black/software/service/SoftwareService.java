@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.black.software.pojo.Software;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,4 +17,6 @@ import java.util.Map;
  */
 public interface SoftwareService extends IService<Software> {
     Page<Software> listByPage(Software software);
+
+    List<Software> selectByCategory(Map<String, Object> map);
 }

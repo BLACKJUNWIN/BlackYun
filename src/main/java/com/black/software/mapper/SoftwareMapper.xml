@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.black.software.mapper.SoftwareMapper">
     <select id="selectByPage" resultType="software" parameterType="software">
-        select s.*,f.name,f.size,f.md5,f.category_id
+        select s.*,f.size,f.md5,f.category_id,f.type
         from software s,file f
         <where>
             <if test="software.name!=null and software.name!=''">
@@ -10,5 +10,18 @@
             </if>
             and f.id=s.file_id
         </where>
+    </select>
+    <select id="selectByCategory" resultType="software" parameterType="map">
+        select s.*,f.size,f.md5,f.category_id,f.type,c.theme_color themeColor
+        from software s,file f,category c
+        <where>
+            <if test="categoryId!=null and categoryId!=''">
+                s.category_id =#{categoryId}
+            </if>
+            and f.id=s.file_id and s.category_id=c.id
+        </where>
+        <if test="size!=null and size!=0">
+            limit 0,#{size}
+        </if>
     </select>
 </mapper>
