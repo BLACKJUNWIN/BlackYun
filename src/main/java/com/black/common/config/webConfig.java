@@ -1,9 +1,6 @@
 package com.black.common.config;
 
-import com.black.blackyun.controller.upDownController;
-import com.black.common.controller.fileUtilsController;
 import com.black.common.handle.tokenInterceptor;
-import com.black.common.utils.fileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

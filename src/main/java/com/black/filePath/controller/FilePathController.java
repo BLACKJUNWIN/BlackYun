@@ -22,6 +22,7 @@ import com.black.filePath.service.FilePathService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/filePath")
@@ -85,46 +86,12 @@ public class FilePathController {
 
     @PostMapping("/upload_slice_file")
     public responseJson uploadSliceFile(@RequestParam MultipartFile file, @RequestParam String fileName, @RequestParam int index) {
-        //查看是否已经存在该文件上级目录,不存在就创建
-        java.io.File realFile = new java.io.File(fileUtils.path + "/temp/" + fileName);
-        if (!realFile.getParentFile().exists()) {
-            realFile.getParentFile().mkdirs();
-        }
-        //开始文件整合
-        RandomAccessFile raf = null;
-        InputStream fis = null;
-        try {
-            //随意读取文件函数
-            raf = new RandomAccessFile(realFile, "rw");
-            raf.seek(index * 1024 * 1024L);
-            fis = file.getInputStream();
-            byte[] buffer = new byte[1024 * 512];
-            int len = 0;
-            while ((len = fis.read(buffer)) != -1) {//读取到字节数组
-                raf.write(buffer, 0, len);//写入
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        boolean temp = fileUtils.subUpload(file, "temp", fileName, index);
+        if(temp){
+            return new responseJson(index);
+        }else{
             return new responseJson(responseCode.FILE_FAIL);
-        } finally {
-            //释放内存
-            if (raf != null) {
-                try {
-                    raf.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
-        return new responseJson(index);
     }
 
     @PostMapping("/file_exist")
@@ -176,5 +143,11 @@ public class FilePathController {
         java.io.File File = new java.io.File(fileUtils.path + "/temp/" + fileName);
         boolean delete = File.delete();
         return new responseJson(delete);
+    }
+
+    @GetMapping("/down")
+    public void downFile(@RequestParam String md5, HttpServletResponse response, HttpServletRequest request){
+        File file = fileService.getOne(new QueryWrapper<com.black.file.pojo.File>().eq("md5", md5));
+        fileUtils.downFile(file,response,request);
     }
 }
