@@ -35,9 +35,9 @@ public class fileUtils {
 
     /**
      * 单点上传(只支持1MB一下内容上传)
-     * @param file
-     * @param category
-     * @return
+     * @param file 文件数据
+     * @param category 分类名/对应文件夹
+     * @return 自定义枚举类
      */
     public static responseJson uploadFile(MultipartFile file,String category){
         String fileName = file.getOriginalFilename();
@@ -117,35 +117,6 @@ public class fileUtils {
     }
 
     /**
-     * 文件下载(单点传输,只支持1MB一下内容下载)//淘汰
-     * @param filePath 文件路径
-     * @param outputStream 输出流
-     * @return 是否成功
-     */
-//    private static boolean down(String filePath, OutputStream outputStream){
-//        try {
-//            File file = new File(filePath);
-//            FileInputStream fileInputStream = new FileInputStream(file);
-//            byte[] fileByte;
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            byte[] bytes = new byte[1024];
-//            int len;
-//            while ((len = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
-//                byteArrayOutputStream.write(bytes, 0, len);
-//            }
-//            byteArrayOutputStream.close();
-//            fileByte = byteArrayOutputStream.toByteArray();
-//            outputStream.write(fileByte);
-//            System.out.println("图片:"+filePath+",下载成功");
-//            return true;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.out.println("图片:"+filePath+",下载失败");
-//            return false;
-//        }
-//    }
-
-    /**
      * 断点传输
      * @param file 文件数据
      * @param outputStream 输出流
@@ -191,8 +162,8 @@ public class fileUtils {
 
     /**
      * 获取递归文件夹大小
-     * @param pack
-     * @return
+     * @param pack 对应文件夹
+     * @return 文件大小
      */
     public static long packSize(File pack){
         long totalSize=0;

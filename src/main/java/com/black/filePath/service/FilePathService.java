@@ -1,6 +1,7 @@
 package com.black.filePath.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.black.file.pojo.File;
 import com.black.filePath.pojo.FilePath;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -18,4 +19,6 @@ import java.util.Map;
 public interface FilePathService extends IService<FilePath> {
     Page<FilePath> listByPage(Map<String, Object> map);
     List<FilePath> showPack(Map<String, Object> map);
+
+    boolean saveFilePath(File file, Long fileId, Long userId);
 }

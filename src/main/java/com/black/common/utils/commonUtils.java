@@ -32,24 +32,13 @@ public class commonUtils {
         return code;
     }
 
-    /**
-     * 判断字符串为空
-     * @param text
-     * @return
-     */
+
     public static boolean isNull(String text){
         return text == null || text.isEmpty();
     }
-
-    /**
-     *  判断Long类型为空
-     * @param text
-     * @return
-     */
     public static boolean isNull(Long text){
         return text == null || text==0L;
     }
-
     public static boolean isNull(Object text){
         return text == null || text.toString().isEmpty();
     }

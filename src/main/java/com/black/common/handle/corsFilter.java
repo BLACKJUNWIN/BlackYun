@@ -11,11 +11,6 @@ import java.io.IOException;
 @WebFilter(urlPatterns = "/*", filterName = "corsFilter")
 public class corsFilter implements Filter {
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
-
-    @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setHeader("Access-Control-Allow-Origin","*");
@@ -24,10 +19,5 @@ public class corsFilter implements Filter {
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Accept,Accept-Encoding,Accept-Language,Connection,Content-Length,Content-Type, Cookie,Host,Origin,Referer,User-Agent, Authorization,X-Requested-With,OsType");
         filterChain.doFilter(servletRequest, response);
-    }
-
-    @Override
-    public void destroy() {
-
     }
 }

@@ -65,9 +65,7 @@ public class FilePathController {
 
     @PostMapping("/new_mkdir")
     public responseJson newMkdir(@RequestBody Map<String, Object> map, HttpServletRequest request) {
-        Long userId = tokenUtils.requestGetId(request);
         String fileName = map.get("fileName") + "";
-        String level = map.get("level") + "";
 
         if (filePathService.list(new QueryWrapper<FilePath>().eq("name", fileName)).size() > 0) {
             fileName += "_r" + new Random().nextInt(100);
@@ -77,8 +75,8 @@ public class FilePathController {
         FilePath filePath = new FilePath();
         filePath.setFileId(1L);
         filePath.setName(fileName);
-        filePath.setUserId(userId);
-        filePath.setLevel(level);
+        filePath.setUserId(tokenUtils.requestGetId(request));
+        filePath.setLevel(map.get("level") + "");
         filePathService.save(filePath);
 
         return new responseJson(responseCode.SUCCESS);
@@ -87,67 +85,52 @@ public class FilePathController {
     @PostMapping("/upload_slice_file")
     public responseJson uploadSliceFile(@RequestParam MultipartFile file, @RequestParam String fileName, @RequestParam int index) {
         boolean temp = fileUtils.subUpload(file, "temp", fileName, index);
-        if(temp){
+        if (temp) {
             return new responseJson(index);
-        }else{
-            return new responseJson(responseCode.FILE_FAIL);
         }
+        return new responseJson(responseCode.FILE_FAIL);
+
     }
 
     @PostMapping("/file_exist")
     public responseJson fileExist(@RequestBody File file, HttpServletRequest request) {
         File sameFile = fileService.getOne(new QueryWrapper<File>().eq("md5", file.getMd5()));
-        if (sameFile != null) {//是否存在MD5相同文件,达到秒传
-            FilePath filePath = new FilePath();
-            filePath.setFileId(sameFile.getId());
-            filePath.setUserId(tokenUtils.requestGetId(request));
-            filePath.setLevel(file.getPath());
-            if(filePathService.list(new QueryWrapper<FilePath>().eq("name",file.getName())).size()>=1){
-                filePath.setName("r"+new Random().nextInt(10)+"*"+file.getName());
-            }else{
-                filePath.setName(file.getName());
-            }
-            filePathService.save(filePath);
-            return new responseJson(responseCode.SUCCESS);
+        if (sameFile == null) {
+            return new responseJson(responseCode.FILE_NULL);
         }
-        return new responseJson(responseCode.FILE_NULL);
+        if (!filePathService.saveFilePath(file, sameFile.getId(), tokenUtils.requestGetId(request))) {
+            return new responseJson(responseCode.FAIL);
+        }
+        return new responseJson(responseCode.SUCCESS);
+
     }
 
     @PostMapping("/file_combined")
     public responseJson fileCombined(@RequestBody File file, HttpServletRequest request) {
         //文件上传服务器成功,同步数据库数据
-        java.io.File realFile = new java.io.File(fileUtils.path + "/temp/" + file.getRealName());
-        //先创建file
-        File dataFile = new File();
-        dataFile.setMd5(file.getMd5());
-        dataFile.setName(file.getRealName());
-        dataFile.setPath(file.getPath());
-        dataFile.setType(file.getName().substring(file.getName().lastIndexOf(".")+1));
-        dataFile.setCategoryId(1534448966809767937L);
-        dataFile.setSize(realFile.length());
-        dataFile.setLevel("/");
-        fileService.save(dataFile);
-        File newFile = fileService.getOne(new QueryWrapper<File>().eq("md5", file.getMd5()));
+        file.setType(file.getName().substring(file.getName().lastIndexOf(".") + 1));
+        file.setCategoryId(1534448966809767937L);
+        file.setSize((new java.io.File(fileUtils.path + "/temp/" + file.getRealName())).length());
+        file.setLevel("/");
+        fileService.save(file);
 
-        FilePath filePath = new FilePath();
-        filePath.setFileId(newFile.getId());
-        filePath.setUserId(tokenUtils.requestGetId(request));
-        filePath.setLevel(file.getPath());
-        filePath.setName(file.getName());
-        filePathService.save(filePath);
-        return new responseJson(responseCode.SUCCESS);
+        File newFile = fileService.getOne(new QueryWrapper<File>().eq("md5", file.getMd5()));
+        if (filePathService.saveFilePath(file, newFile.getId(), tokenUtils.requestGetId(request))) {
+            return new responseJson(responseCode.SUCCESS);
+        }
+        return new responseJson(responseCode.FAIL);
     }
 
     @GetMapping("/upload_cancel")
-    public responseJson uploadCancel(@RequestParam String fileName){
+    public responseJson uploadCancel(@RequestParam String fileName) {
         java.io.File File = new java.io.File(fileUtils.path + "/temp/" + fileName);
         boolean delete = File.delete();
         return new responseJson(delete);
     }
 
     @GetMapping("/down")
-    public void downFile(@RequestParam String md5, HttpServletResponse response, HttpServletRequest request){
+    public void downFile(@RequestParam String md5, HttpServletResponse response, HttpServletRequest request) {
         File file = fileService.getOne(new QueryWrapper<com.black.file.pojo.File>().eq("md5", md5));
-        fileUtils.downFile(file,response,request);
+        fileUtils.downFile(file, response, request);
     }
 }

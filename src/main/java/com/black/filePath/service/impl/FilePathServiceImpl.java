@@ -1,6 +1,9 @@
 package com.black.filePath.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.black.common.utils.tokenUtils;
+import com.black.file.pojo.File;
 import com.black.filePath.pojo.FilePath;
 import com.black.filePath.mapper.FilePathMapper;
 import com.black.filePath.service.FilePathService;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * <p>
@@ -37,5 +41,25 @@ public class FilePathServiceImpl extends ServiceImpl<FilePathMapper, FilePath> i
     @Override
     public List<FilePath> showPack(Map<String, Object> map) {
         return filePathMapper.showPack(map);
+    }
+
+    @Override
+    public boolean saveFilePath(File file, Long fileId,Long userId) {
+        try {
+            FilePath filePath = new FilePath();
+            filePath.setFileId(fileId);
+            filePath.setUserId(userId);
+            filePath.setLevel(file.getPath());
+            if(filePathMapper.selectList(new QueryWrapper<FilePath>().eq("name",file.getName())).size()>=1){
+                filePath.setName("r"+new Random().nextInt(10)+"*"+file.getName());
+            }else{
+                filePath.setName(file.getName());
+            }
+            filePathMapper.insert(filePath);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
