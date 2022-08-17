@@ -152,10 +152,10 @@ public class fileUtils {
      */
     private static void subFile(File file, OutputStream outputStream){
         try {
-            System.out.println("文件名:" + file.getName());
+//            System.out.println("文件名:" + file.getName());
             //获取文件总大小
             long totalSize = file.length();
-            System.out.println("文件总大小:" + totalSize/1024 + "kb,"+((float)totalSize/1048576)+"MB");
+//            System.out.println("文件总大小:" + totalSize/1024 + "kb,"+((float)totalSize/1048576)+"MB");
             //将文件分片并分开下载
             long threadCount = totalSize/(1024 * 1024 * 15)+1;
             int perThreadSize = (int) (totalSize / threadCount);//每一个线程分到的任务下载量
@@ -208,7 +208,7 @@ public class fileUtils {
 
     public static void downFile(com.black.file.pojo.File blackFile, HttpServletResponse response, HttpServletRequest request){
         String fileName = blackFile.getName();
-        String filePath = path+"temp/+"+fileName;
+        String filePath = path+"temp/"+fileName;
         File file=new File(filePath);
         // 获取浏览器的信息
         try {
@@ -234,7 +234,6 @@ public class fileUtils {
             if(blackFile.getType().equals("zip")||blackFile.getType().equals("7z")||blackFile.getType().equals("rar")){
                 response.setContentLengthLong(size);
                 fileUtils.subFile(new File(filePath),outputStream);
-//                response.setHeader("content-length",size+"");
             }else if(blackFile.getType().equals("pack")||file.length()>1024*1024*50){
                 String tempPath=path+"/tmp";
                 File tempPack=new File(tempPath);
