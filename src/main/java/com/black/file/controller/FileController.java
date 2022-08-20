@@ -1,6 +1,7 @@
 package com.black.file.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.black.common.pojo.responseJson;
+import com.black.common.utils.fileUtils;
 import com.black.common.utils.tokenUtils;
 import com.black.filePath.pojo.FilePath;
 import com.black.filePath.service.FilePathService;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.black.file.pojo.File;
 import com.black.file.service.FileService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,5 +54,11 @@ public class FileController {
 	@PatchMapping("/")
 	public responseJson select(@RequestBody Map<String,Object> map){
 		return new responseJson(fileService.listByPage(map));
+	}
+
+	@PostMapping("/uploadImage")
+	public responseJson uploadImage(@RequestParam MultipartFile file,@RequestParam String category){
+		return fileUtils.uploadFile(file, category);
+
 	}
 }

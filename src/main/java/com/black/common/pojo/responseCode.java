@@ -15,6 +15,7 @@ public enum responseCode {
     FILE_FAIL("文件操作失败",423),
     FILE_NULL("文件不存在",425),
     FILE_EXIST("文件已存在",424),
+    NAME_REPEAT("名字重复",426),
     OBJECT_EXIST("对象已存在,请勿重复添加",425);
     final String message;//状态
     final int code;//状态码

@@ -1,6 +1,5 @@
 package com.black.common.utils;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.black.common.pojo.UnitDownloader;
 import com.black.common.pojo.responseCode;
 import com.black.common.pojo.responseJson;
@@ -20,17 +19,19 @@ public class fileUtils {
     public static final String path="D:/file/desk/BlackYun/";
     public static final String pathMapping="http://localhost:8088/upload/";
 
-    public static responseJson removeFile(String filePath){
+    public static void removeFile(String filePath){
         String fileName = filePath.replace(pathMapping,"");
         String realPath = path+fileName;
         File file = new File(realPath);
         if(!file.exists()){
-            return new responseJson(responseCode.FILE_NULL);
+            new responseJson(responseCode.FILE_NULL);
+            return;
         }
         if(file.delete()){
-            return new responseJson("文件删除成功");
+            new responseJson("文件删除成功");
+            return;
         }
-        return new responseJson(responseCode.FILE_FAIL);
+        new responseJson(responseCode.FILE_FAIL);
     }
 
     /**

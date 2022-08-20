@@ -50,10 +50,17 @@ public class FilePathServiceImpl extends ServiceImpl<FilePathMapper, FilePath> i
             filePath.setFileId(fileId);
             filePath.setUserId(userId);
             filePath.setLevel(file.getPath());
-            if(filePathMapper.selectList(new QueryWrapper<FilePath>().eq("name",file.getName())).size()>=1){
-                filePath.setName("r"+new Random().nextInt(10)+"*"+file.getName());
+            int index = file.getName().lastIndexOf(".");
+            String fileName="";
+            if(index!=-1){
+                fileName = file.getName().substring(0,index);
             }else{
-                filePath.setName(file.getName());
+                fileName=file.getName();
+            }
+            if(filePathMapper.selectList(new QueryWrapper<FilePath>().eq("name",fileName)).size()>=1){
+                filePath.setName("r"+new Random().nextInt(10)+"*"+fileName);
+            }else{
+                filePath.setName(fileName);
             }
             filePathMapper.insert(filePath);
             return true;

@@ -45,6 +45,10 @@ public class Software implements Serializable {
 
     private String image;
 
+    private int verify;
+
+    @TableField(exist = false)
+    private String category;
     @TableField(exist = false)
     private String themeColor;
     @TableField(exist = false)

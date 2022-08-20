@@ -35,31 +35,15 @@ public class SoftwareController {
 
     @PostMapping("/")
     public responseJson add(@RequestBody Software software) {
-        if (software.getMd5() != null && !software.getMd5().equals("")) {
             File file = new File();
-            File sameFile = fileService.getOne(new QueryWrapper<File>().eq("md5", software.getMd5()));
+            Software sameFile = softwareService.getOne(new QueryWrapper<Software>().eq("name", software.getName()));
             if (sameFile == null) {
-                file.setRealName(software.getRealName());
-                file.setName(software.getName());
-                file.setPath(software.getPath());
-                file.setSize(software.getSize());
-                file.setType(software.getType());
-                file.setMd5(software.getMd5());
-                file.setCategoryId(software.getCategoryId());
-                fileService.save(file);
+                softwareService.save(software);
+                return new responseJson(softwareService.listByPage(new Software()));
             } else {
-                return new responseJson(responseCode.FILE_EXIST);
+                return new responseJson(responseCode.NAME_REPEAT);
             }
-            File saveFile = fileService.getOne(new QueryWrapper<File>().eq("md5", software.getMd5()));
-            software.setFileId(saveFile.getId());
         }
-        List<Software> fileList = softwareService.list(new QueryWrapper<Software>().eq("file_id",software.getFileId()));
-        if (fileList.size() >= 1) {
-            return new responseJson(responseCode.FILE_EXIST);
-        }
-        softwareService.save(software);
-        return new responseJson(softwareService.listByPage(new Software()));
-    }
 
     @DeleteMapping("/{id}")
     public responseJson delCategory(@PathVariable Long id) {
@@ -99,5 +83,17 @@ public class SoftwareController {
             }
         }
         return new responseJson(list);
+    }
+
+    @PostMapping("/verify")
+    public responseJson verify(@RequestBody  Map<String, Object> map){
+        Software software = softwareService.getById(Long.parseLong(map.get("id")+""));
+        if(software.getVerify()==0){
+            software.setVerify(1);
+        }else{
+            software.setVerify(0);
+        }
+        softwareService.updateById(software);
+        return new responseJson("success");
     }
 }

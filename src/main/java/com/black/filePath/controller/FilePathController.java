@@ -101,8 +101,7 @@ public class FilePathController {
         if (!filePathService.saveFilePath(file, sameFile.getId(), tokenUtils.requestGetId(request))) {
             return new responseJson(responseCode.FAIL);
         }
-        return new responseJson(responseCode.SUCCESS);
-
+        return new responseJson(sameFile);
     }
 
     @PostMapping("/file_combined")
@@ -111,12 +110,13 @@ public class FilePathController {
         file.setType(file.getName().substring(file.getName().lastIndexOf(".") + 1));
         file.setCategoryId(1534448966809767937L);
         file.setSize((new java.io.File(fileUtils.path + "/temp/" + file.getRealName())).length());
+        file.setName(file.getName().substring(0,file.getName().lastIndexOf(".")));
         file.setLevel("/");
         fileService.save(file);
 
         File newFile = fileService.getOne(new QueryWrapper<File>().eq("md5", file.getMd5()));
         if (filePathService.saveFilePath(file, newFile.getId(), tokenUtils.requestGetId(request))) {
-            return new responseJson(responseCode.SUCCESS);
+            return new responseJson(file);
         }
         return new responseJson(responseCode.FAIL);
     }
